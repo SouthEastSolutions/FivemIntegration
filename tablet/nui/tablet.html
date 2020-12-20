@@ -1,0 +1,444 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+        <script>
+            /*var overridenTabs = [];
+        function updateSelectedTabUrl(url)
+        {
+            overridenTabs.push(selectedTab);
+            let expression = /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/gi;
+            if (url == "newtab.html")
+            {
+                url = "New Tab";
+            }
+            if (tabs.length > 25) {
+                $("#title-" + selectedTab).text("");
+            } else if (tabs.length > 15) {
+                $("#title-" +selectedTab).text(url[0]);
+            } else if (tabs.length > 10) {
+                $("#title-" + selectedTab).text(url.substring(0, 4));
+            } else if (tabs.length > 6) {
+                $("#title-" + selectedTab).text(url.substring(0, 7));
+            } else {
+                $("#title-" + selectedTab).text(url);
+            }
+            $("#url-input").val(url);
+        }*/
+        </script>
+        <style>
+            body {
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                font-size: smaller;
+            }
+
+            *:focus {
+                outline: none;
+            }
+
+            #tablet {
+                background-color: black;
+                width: 70%;
+                max-height: 70%;
+                min-height: 70%;
+                border-radius: 20px;
+                margin: 0 auto;
+            }
+
+            #content {
+                width: 96%;
+                max-width: 100%;
+                max-height: 70%;
+                min-height: 70%;
+                padding: 30px 30px;
+                display: none;
+            }
+
+            .nav {
+                display: flex;
+                background-color: #303030;
+                height: 30px;
+                border-radius: 1px;
+            }
+
+            .nav-item {
+                background-color: darkgray;
+                width: 250px;
+                margin: 5px 3px;
+                border-top-left-radius: 5px;
+                border-top-right-radius: 5px;
+                height: 20px;
+                padding: 3px 10px;
+                padding-right: 10px;
+                position: relative;
+                white-space: nowrap;
+                overflow: hidden;
+                cursor: pointer;
+            }
+
+            #add-tab {
+                padding: 3px !important;
+                text-align: center;
+                font-family: "Franklin Gothic Medium", "Arial Narrow", Arial,
+                    sans-serif;
+                cursor: pointer;
+                flex: 0 0 25px;
+                -webkit-text-stroke: 1px black;
+            }
+
+            #add-tab:hover {
+                color: white;
+                background-color: #555555;
+                font-weight: bolder;
+                -webkit-text-stroke: 1px white;
+            }
+
+            .selected-tab {
+                background-color: white !important;
+            }
+
+            .close-btn {
+                position: absolute;
+                right: 5px;
+                color: #303030;
+                font-size: small;
+                opacity: 0.75;
+                z-index: 10;
+                -webkit-text-stroke: 1px black;
+            }
+
+            .close-btn:hover {
+                font-weight: bolder;
+                opacity: 1;
+            }
+
+            #url-input {
+                width: 99%;
+                height: 25px;
+                font-family: Verdana, Geneva, Tahoma, sans-serif;
+                padding: 0px 5px;
+                background-color: lightgray;
+                border: none;
+                border-radius: 1px;
+                z-index: 3;
+            }
+
+            .frame-item {
+                width: 100%;
+                height: calc(100vh - 300px);
+            }
+
+            #exit {
+                margin-top: 3px;
+                position: absolute;
+                border: 1px solid white;
+                border-radius: 50%;
+                width: 30px;
+                height: 15px;
+                left: 50%;
+                transform: translateX(-50%);
+                -webkit-transform: translateX(-50%);
+            }
+        </style>
+    </head>
+    <body>
+        <div id="tablet">
+            <div id="content">
+                <div class="nav">
+                    <!-- <div class="nav-item" id="add-tab">+</div> -->
+                    <div id="first-tab"></div>
+                </div>
+                <!-- <form action="#" id="url">
+                <input type="url" name="url" id="url-input">
+            </form> -->
+                <div class="frames"></div>
+                <div id="exit"></div>
+            </div>
+        </div>
+
+        <script>
+            var tabs = [];
+            var selectedTab = 1;
+            var totalTabs = 0;
+
+            $(document).ready(() => {
+                $("#url").submit((event) => {
+                    document.getElementById("frame-" + selectedTab).src = $(
+                        "#url-input"
+                    ).val();
+                    event.preventDefault();
+                    $("#url-input").blur();
+                });
+
+                /*setInterval(() => {
+                    let expression = /(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z0-9][a-z0-9-]{0,61}[a-z0-9]/gi;
+                    $.each(tabs, (index, element) => {
+                        let itId = parseInt(
+                            element.attr("id").split("-")[1],
+                            10
+                        );
+                        if (overridenTabs.indexOf(itId) == -1) {
+                            let url = document
+                                .getElementById("frame-" + itId)
+                                .src.match(expression)[0];
+                            if (url == "newtab.html") {
+                                url = "New Tab";
+                            }
+                            if (tabs.length > 25) {
+                                $("#title-" + itId).text("");
+                            } else if (tabs.length > 15) {
+                                $("#title-" + itId).text(url[0]);
+                            } else if (tabs.length > 10) {
+                                $("#title-" + itId).text(url.substring(0, 4));
+                            } else if (tabs.length > 6) {
+                                $("#title-" + itId).text(url.substring(0, 7));
+                            } else {
+                                $("#title-" + itId).text(url);
+                            }
+                        }
+                    });
+                }, 1000);*/
+
+                $("#add-tab").click((event) => {
+                    if (tabs.length > 30) {
+                        alert(
+                            "Too many tabs are open. Close some before opening more."
+                        );
+                        return;
+                    }
+
+                    $(".nav > div").each(function () {
+                        $(this).removeClass("selected-tab");
+                    });
+
+                    let url;
+                    let title;
+                    if (totalTabs == 0) {
+                        title = "Warrant Lookup";
+                        url =
+                            "";
+                    } else if (totalTabs == 1) {
+                        title = "MDT";
+                        url = "https://northwestcoast.bubbleapps.io";
+                    } else if (totalTabs == 2) {
+                        title = "Building Records";
+                        url = "";
+                    } else if (totalTabs == 3) {
+                        title = "Penal Code";
+                        url =
+                            "";
+                    } else if (totalTabs == 4) {
+                        title = "Fire Command Board";
+                        url =
+                            "";
+                    } else {
+                        title = "New Tab";
+                        url = "newtab.html";
+                    }
+
+                    $("#add-tab").before(
+                        "<div class='nav-item selected-tab' id='tab-" +
+                            totalTabs +
+                            "'><span id='title-" +
+                            totalTabs +
+                            "'>" +
+                            title +
+                            "</span><span class='close-btn' id='close-" +
+                            totalTabs +
+                            "'>&#10006;</span></div>"
+                    );
+                    $(".frames").append(
+                        "<iframe src='" +
+                            url +
+                            "' frameborder='0' class='frame-item' id='frame-" +
+                            totalTabs +
+                            "'></iframe>"
+                    );
+                    $("#url-input").val(url);
+                    tabs.push($("#tab-" + totalTabs));
+                    selectedTab = totalTabs;
+                    totalTabs++;
+
+                    clickListeners(true);
+                });
+                function firstRun() {
+                    $(".nav > div").each(function () {
+                        $(this).removeClass("selected-tab");
+                    });
+
+                    let url;
+                    let title;
+                    if (totalTabs == 0) {
+                        title = "Warrant Lookup";
+                        url =
+                            "";
+                    } else if (totalTabs == 1) {
+                        title = "MDT";
+                        url = "https://northwestcoast.bubbleapps.io";
+                    }
+
+                    $("#first-tab").before(
+                        "<div class='nav-item selected-tab' id='tab-" +
+                            totalTabs +
+                            "'><span id='title-" +
+                            totalTabs +
+                            "'>" +
+                            title +
+                            "</span><!--<span class='close-btn' id='close-" +
+                            totalTabs +
+                            "'>&#10006;</span>--></div>"
+                    );
+                    $(".frames").append(
+                        "<iframe src='" +
+                            url +
+                            "' frameborder='0' class='frame-item' id='frame-" +
+                            totalTabs +
+                            "'></iframe>"
+                    );
+                    //$("#url-input").val(url);
+                    tabs.push($("#tab-" + totalTabs));
+                    selectedTab = totalTabs;
+                    totalTabs++;
+
+                    clickListeners(true);
+                }
+                firstRun();
+                firstRun();
+
+                function clickListeners(adding) {
+                    $(".nav > div").each(function () {
+                        if ($(this).attr("id") != "add-tab") {
+                            $(this).unbind("click");
+                            $(this).click((event) => {
+                                if ($(event.target).hasClass("close-btn")) {
+                                    let tab = parseInt(
+                                        $(this).attr("id").split("-")[1],
+                                        10
+                                    );
+                                    $.each(tabs, (index, element) => {
+                                        let itId = parseInt(
+                                            element.attr("id").split("-")[1],
+                                            10
+                                        );
+                                        if (
+                                            element.attr("id") ==
+                                            $(event.target).parent().attr("id")
+                                        ) {
+                                            if (
+                                                selectedTab == itId &&
+                                                tabs.length > 1 &&
+                                                index == 0
+                                            ) {
+                                                tabs[index + 1].click();
+                                            } else if (
+                                                selectedTab == itId &&
+                                                index == tabs.length - 1 &&
+                                                tabs.length > 1
+                                            ) {
+                                                tabs[index - 1].click();
+                                            } else if (
+                                                selectedTab == itId &&
+                                                tabs.length > 1
+                                            ) {
+                                                tabs[index + 1].click();
+                                            } else {
+                                                $("#url-input").val("");
+                                            }
+                                            tabs.splice(index, 1);
+                                            $(event.target).parent().remove();
+                                            $("#frame-" + tab).remove();
+                                            return false;
+                                        }
+                                    });
+                                    if (tabs.length > 0) {
+                                        $("#url").show()
+                                    } else {
+                                        $("#add-tab").click();
+                                    }
+                                } else {
+                                    $(".selected-tab").each(function () {
+                                        $(this).removeClass("selected-tab");
+                                    });
+                                    $(this).addClass("selected-tab");
+
+                                    $(".frame-item").each(function () {
+                                        $(this).hide();
+                                    });
+
+                                    let tab = parseInt(
+                                        $(this).attr("id").split("-")[1],
+                                        10
+                                    );
+                                    selectedTab = tab;
+                                    $("#frame-" + tab).show();
+                                    $("#url-input").val(
+                                        document.getElementById("frame-" + tab)
+                                            .src
+                                    );
+                                }
+                            });
+                        }
+                    });
+                    if (adding) {
+                        $(".frame-item").each(function () {
+                            if ($(this).attr("id") != "frame-" + selectedTab) {
+                                $(this).hide();
+                            }
+                        });
+                    }
+                }
+
+                function closeEvent(callback) {
+                    $("#content").fadeOut();
+                    if (callback) {
+                        $.post("http://tablet/exit"); // tell FiveM to unfocus nui
+                    }
+                }
+
+                function openEvent() {
+                    $("#content").fadeIn();
+                }
+
+                window.addEventListener("message", function (event) {
+                    var item = event.data;
+                    if (item.reload) {
+                        $(".frame-item").each(function() {
+                            $(this)[0].contentWindow.location.reload();
+                        });
+                    } else if (item.showtab) {
+                        openEvent();
+                        if (
+                            item.dev === true &&
+                            !$("#frame-1")
+                                .attr("src")
+                                .startsWith("https://northwestcoast.bubbleapps.io")
+                        ) {
+                            $("#frame-1").attr(
+                                "src",
+                                "https://northwestcoast.bubbleapps.io"
+                            );
+                        }
+                    } // lua requested show
+                    else if (item.hidetab) {
+                        closeEvent(false);
+                    } // lua requested hide
+                });
+
+                // When pressed ESC dispatch escape request
+                document.addEventListener("keyup", function (data) {
+                    if (data.which == 27) {
+                        closeEvent(true); // hide ui
+                    }
+                });
+
+                // When clicked the dot
+                $("#exit").click((event) => {
+                    closeEvent(true); // hide ui
+                });
+            });
+        </script>
+    </body>
+</html>

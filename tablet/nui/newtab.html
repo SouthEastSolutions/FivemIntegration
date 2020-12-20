@@ -1,0 +1,35 @@
+<html>
+<head>
+    <title>New Tab</title>
+    <style>
+        body {
+            background-color: gray;
+            font-family: Ariel;
+        }
+    </style>
+    <script src="nui://game/ui/jquery.js" type="text/javascript"></script>
+</head>
+<body>
+    <h1>New Tab</h1>
+    <p>Use the URL bar to navigate to a website. Back and Forward arrows are not supported.<br />
+    Some websites may not work. <strong>URLs must be fully qualified (include 'https').</strong>
+    </p>
+    <p>
+        Here are some useful links:<br />
+        <a class="tablet-sublink" href="https://northwestcoast.bubbleapps.io">Portal/MDT</a><br />
+        <a class="tablet-sublink" href="">Warrant Lookup</a><br />
+        <a class="tablet-sublink" href="">Penal Code</a><br />
+        <a class="tablet-sublink" href="">Fire Building Records</a><br />
+        <a class="tablet-sublink" href="">Search engine</a><br />
+    </p>
+
+
+    <script>
+        $(".tablet-sublink").each(function() {
+            $(this).click(event => {
+                parent.updateSelectedTabUrl($(event.target).attr("href"));
+            });
+        });
+    </script>
+</body>
+</html>
